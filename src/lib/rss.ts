@@ -28,7 +28,7 @@ export async function parseRssFeed(url: string): Promise<ParsedFeed> {
         content: item.content,
         contentSnippet: item.contentSnippet,
         isoDate: item.isoDate,
-        'dc:creator': (item as Record<string, unknown>)['dc:creator'] as string | undefined,
+        'dc:creator': (item as unknown as Record<string, unknown>)['dc:creator'] as string | undefined,
         creator: item.creator,
         author: item.author,
       })),
