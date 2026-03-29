@@ -25,6 +25,12 @@ export interface Feed {
   deals?: Deal[]
 }
 
+export interface FeedSummary {
+  id: string
+  name: string
+  url: string
+}
+
 export interface Keyword {
   id: string
   text: string
@@ -41,7 +47,7 @@ export interface Deal {
   notified: boolean
   createdAt: Date
   feedId: string
-  feed?: Feed
+  feed?: FeedSummary
 }
 
 export interface FeedCreateInput {
