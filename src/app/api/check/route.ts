@@ -12,16 +12,7 @@ interface CheckResult {
   errors: string[]
 }
 
-export async function POST(request: NextRequest): Promise<NextResponse<ApiResponse>> {
-  const cronSecret = request.headers.get('x-cron-secret')
-
-  if (process.env.CRON_SECRET && cronSecret !== process.env.CRON_SECRET) {
-    return NextResponse.json(
-      { success: false, error: { code: 'UNAUTHORIZED', message: '인증에 실패했습니다' } },
-      { status: 401 }
-    )
-  }
-
+export async function POST(): Promise<NextResponse<ApiResponse>> {
   try {
     const feeds = await prisma.feed.findMany({
       where: { enabled: true },
