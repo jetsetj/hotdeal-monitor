@@ -7,6 +7,10 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+generator libsql {
+  provider = "prisma-client-libsql"
+}
+
 model Feed {
   id        String   @id @default(cuid())
   name      String
