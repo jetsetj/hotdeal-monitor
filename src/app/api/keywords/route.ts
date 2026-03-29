@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { ApiResponse, Keyword } from '@/types'
 
+export const dynamic = 'force-dynamic'
+
 export async function GET(): Promise<NextResponse<ApiResponse<Keyword[]>>> {
   try {
     const keywords = await prisma.keyword.findMany({

@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { ApiResponse, Deal, DealsQueryParams } from '@/types'
+import { ApiResponse, Deal } from '@/types'
+
+export const dynamic = 'force-dynamic'
 
 export async function GET(request: NextRequest): Promise<NextResponse<ApiResponse<Deal[]>>> {
   try {

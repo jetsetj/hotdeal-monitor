@@ -3,6 +3,8 @@ import { prisma } from '@/lib/prisma'
 import { parseRssFeed } from '@/lib/rss'
 import { ApiResponse, Feed } from '@/types'
 
+export const dynamic = 'force-dynamic'
+
 export async function GET(): Promise<NextResponse<ApiResponse<Feed[]>>> {
   try {
     const feeds = await prisma.feed.findMany({
