@@ -1,0 +1,36 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Feed {
+  id        String   @id @default(cuid())
+  name      String
+  url       String   @unique
+  enabled   Boolean  @default(true)
+  createdAt DateTime @default(now())
+  deals     Deal[]
+}
+
+model Keyword {
+  id        String   @id @default(cuid())
+  text      String   @unique
+  enabled   Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model Deal {
+  id        String   @id @default(cuid())
+  title     String
+  link      String   @unique
+  price     String?
+  siteName  String
+  notified  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  feedId    String
+  feed      Feed     @relation(fields: [feedId], references: [id], onDelete: Cascade)
+}
