@@ -65,9 +65,17 @@ export async function POST(request: NextRequest): Promise<NextResponse<ApiRespon
 
     try {
       await parseRssFeed(url)
-    } catch {
+    } catch (error) {
+      const detail =
+        error instanceof Error ? error.message : 'RSS 파싱 실패'
       return NextResponse.json(
-        { success: false, error: { code: 'INVALID_RSS', message: '유효하지 않은 RSS 형식입니다' } },
+        {
+          success: false,
+          error: {
+            code: 'INVALID_RSS',
+            message: `유효하지 않은 RSS 형식입니다: ${detail}`,
+          },
+        },
         { status: 400 }
       )
     }

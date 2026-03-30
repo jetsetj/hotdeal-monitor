@@ -29,7 +29,7 @@ export default function FeedForm() {
       } else {
         const errorMessage = data.error?.message || '피드 추가에 실패했습니다'
         if (data.error?.code === 'INVALID_RSS') {
-          alert('유효하지 않은 RSS 형식입니다.\n올바른 RSS 피드 URL을 입력해주세요.\n(예: https://example.com/rss 또는 https://example.com/feed.xml)')
+          alert(`${errorMessage}\n\n올바른 RSS 피드 URL을 입력해주세요.\n(예: https://example.com/rss 또는 https://example.com/feed.xml)`)
         }
         setError(errorMessage)
       }
