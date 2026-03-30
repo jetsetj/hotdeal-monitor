@@ -51,6 +51,33 @@ TELEGRAM_CHAT_ID="your-chat-id"
 CRON_SECRET="your-cron-secret-key"
 ```
 
+## Vercel 배포 체크리스트
+
+Vercel에서는 로컬 `.env` 파일을 읽지 않으므로, **Project Settings → Environment Variables**에 직접 등록해야 합니다.
+
+### 1) 환경변수 등록
+
+- `DATABASE_URL`
+- `TURSO_AUTH_TOKEN` (Turso/libsql 사용 시 필수)
+- `TELEGRAM_BOT_TOKEN`
+- `TELEGRAM_CHAT_ID`
+- `CRON_SECRET`
+
+### 2) DATABASE_URL 설정 방식
+
+- **로컬 개발(SQLite)**: `file:./dev.db`
+- **Vercel 운영 권장(Turso)**: `libsql://your-db.turso.io`
+
+> Vercel 서버리스 환경에서는 로컬 SQLite 파일(`file:...`) 기반 영속 저장이 불안정하므로 Turso 같은 외부 DB 사용을 권장합니다.
+
+### 3) 배포 후 DB 스키마 반영
+
+최소 1회는 아래를 실행해 스키마를 반영하세요.
+
+```bash
+npx prisma db push
+```
+
 ## Telegram Bot 설정
 
 1. Telegram에서 @BotFather 검색
