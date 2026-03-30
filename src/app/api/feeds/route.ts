@@ -63,29 +63,37 @@ export async function POST(request: NextRequest): Promise<NextResponse<ApiRespon
       )
     }
 
+    let checkStatus: 'ok' | 'warning' = 'ok'
+    let checkError: string | null = null
     try {
       await parseRssFeed(url)
     } catch (error) {
-      const detail =
-        error instanceof Error ? error.message : 'RSS 파싱 실패'
-      return NextResponse.json(
-        {
-          success: false,
-          error: {
-            code: 'INVALID_RSS',
-            message: `유효하지 않은 RSS 형식입니다: ${detail}`,
-          },
-        },
-        { status: 400 }
-      )
+      checkStatus = 'warning'
+      const detail = error instanceof Error ? error.message : 'RSS 파싱 실패'
+      checkError = `등록 시 사전 검증 실패: ${detail}`
     }
 
     const feed = await prisma.feed.create({
       data: {
         name: name.trim(),
         url: url.trim(),
+        lastCheckStatus: checkStatus,
+        lastCheckError: checkError,
+        lastCheckedAt: new Date(),
       },
     })
+
+    if (checkStatus === 'warning') {
+      return NextResponse.json(
+        {
+          success: true,
+          data: feed,
+          message:
+            '피드를 추가했습니다. 다만 사전 RSS 검증은 실패하여 다음 자동 체크에서 다시 확인됩니다.',
+        },
+        { status: 201 }
+      )
+    }
 
     return NextResponse.json(
       { success: true, data: feed, message: '피드가 추가되었습니다' },

@@ -103,6 +103,37 @@ export default function FeedList() {
               <div>
                 <p className="text-white font-medium">{feed.name}</p>
                 <p className="text-gray-500 text-sm truncate max-w-xs">{feed.url}</p>
+                <div className="mt-1 flex items-center gap-2">
+                  <span
+                    className={`text-xs px-2 py-0.5 rounded ${
+                      feed.lastCheckStatus === 'ok'
+                        ? 'bg-emerald-900/50 text-emerald-300 border border-emerald-700/50'
+                        : feed.lastCheckStatus === 'warning'
+                          ? 'bg-amber-900/50 text-amber-300 border border-amber-700/50'
+                          : feed.lastCheckStatus === 'error'
+                            ? 'bg-red-900/50 text-red-300 border border-red-700/50'
+                            : 'bg-gray-700 text-gray-300 border border-gray-600'
+                    }`}
+                  >
+                    {feed.lastCheckStatus === 'ok'
+                      ? '정상'
+                      : feed.lastCheckStatus === 'warning'
+                        ? '검증 대기'
+                        : feed.lastCheckStatus === 'error'
+                          ? '체크 실패'
+                          : '미확인'}
+                  </span>
+                  {feed.lastCheckedAt ? (
+                    <span className="text-xs text-gray-500">
+                      {new Date(feed.lastCheckedAt).toLocaleString('ko-KR')}
+                    </span>
+                  ) : null}
+                </div>
+                {feed.lastCheckError ? (
+                  <p className="text-xs text-red-400 mt-1 max-w-xl break-all">
+                    {feed.lastCheckError}
+                  </p>
+                ) : null}
               </div>
             </div>
 

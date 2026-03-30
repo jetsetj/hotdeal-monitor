@@ -21,6 +21,9 @@ export interface Feed {
   name: string
   url: string
   enabled: boolean
+  lastCheckStatus?: string | null
+  lastCheckError?: string | null
+  lastCheckedAt?: Date | null
   createdAt: Date
   deals?: Deal[]
 }
