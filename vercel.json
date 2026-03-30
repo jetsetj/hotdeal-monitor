@@ -1,4 +1,11 @@
 {
   "buildCommand": "prisma generate && next build",
-  "installCommand": "npm install"
+  "installCommand": "npm install",
+  "regions": ["icn1"],
+  "crons": [
+    {
+      "path": "/api/check",
+      "schedule": "*/15 * * * *"
+    }
+  ]
 }

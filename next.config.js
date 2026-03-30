@@ -1,8 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    serverComponentsExternalPackages: ['rss-parser'],
-  },
+  serverExternalPackages: ['rss-parser'],
 }
 
 module.exports = nextConfig
