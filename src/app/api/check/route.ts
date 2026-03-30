@@ -39,14 +39,18 @@ export async function POST(): Promise<NextResponse<ApiResponse>> {
 
       try {
         const parsedFeed = await parseRssFeed(feed.url)
-        await prisma.feed.update({
-          where: { id: feed.id },
-          data: {
-            lastCheckStatus: 'ok',
-            lastCheckError: null,
-            lastCheckedAt: new Date(),
-          },
-        })
+        try {
+          await prisma.feed.update({
+            where: { id: feed.id },
+            data: {
+              lastCheckStatus: 'ok',
+              lastCheckError: null,
+              lastCheckedAt: new Date(),
+            },
+          })
+        } catch {
+          // 구버전 스키마 호환: 상태 컬럼이 없어도 체크 로직은 계속 진행
+        }
         const siteName = parsedFeed.title || extractSiteName(feed.url)
 
         for (const item of parsedFeed.items) {
@@ -99,14 +103,18 @@ export async function POST(): Promise<NextResponse<ApiResponse>> {
       } catch (error) {
         const message = error instanceof Error ? error.message : '알 수 없는 오류'
         result.errors.push(message)
-        await prisma.feed.update({
-          where: { id: feed.id },
-          data: {
-            lastCheckStatus: 'error',
-            lastCheckError: message,
-            lastCheckedAt: new Date(),
-          },
-        })
+        try {
+          await prisma.feed.update({
+            where: { id: feed.id },
+            data: {
+              lastCheckStatus: 'error',
+              lastCheckError: message,
+              lastCheckedAt: new Date(),
+            },
+          })
+        } catch {
+          // 구버전 스키마 호환
+        }
         console.error(`피드 "${feed.name}" 처리 중 오류:`, error)
       }
 

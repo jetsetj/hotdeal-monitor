@@ -73,15 +73,39 @@ export async function POST(request: NextRequest): Promise<NextResponse<ApiRespon
       checkError = `등록 시 사전 검증 실패: ${detail}`
     }
 
-    const feed = await prisma.feed.create({
-      data: {
-        name: name.trim(),
-        url: url.trim(),
-        lastCheckStatus: checkStatus,
-        lastCheckError: checkError,
-        lastCheckedAt: new Date(),
-      },
-    })
+    const createData = {
+      name: name.trim(),
+      url: url.trim(),
+      lastCheckStatus: checkStatus,
+      lastCheckError: checkError,
+      lastCheckedAt: new Date(),
+    }
+
+    let feed: Feed
+    try {
+      feed = await prisma.feed.create({
+        data: createData,
+      })
+    } catch (error) {
+      // 운영 DB가 아직 최신 스키마(lastCheck* 컬럼) 반영 전이면 기본 필드만으로 재시도
+      const message = error instanceof Error ? error.message : String(error)
+      const needsFallback =
+        message.includes('lastCheckStatus') ||
+        message.includes('lastCheckError') ||
+        message.includes('lastCheckedAt') ||
+        message.includes('no such column')
+
+      if (!needsFallback) {
+        throw error
+      }
+
+      feed = await prisma.feed.create({
+        data: {
+          name: name.trim(),
+          url: url.trim(),
+        },
+      })
+    }
 
     if (checkStatus === 'warning') {
       return NextResponse.json(
