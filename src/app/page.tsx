@@ -10,6 +10,7 @@ export default function DashboardPage() {
     notified: number
     error?: string
   } | null>(null)
+  const [refreshTrigger, setRefreshTrigger] = useState(0)
 
   const runPolling = async () => {
     setPolling(true)
@@ -25,6 +26,7 @@ export default function DashboardPage() {
           newDeals: summary?.totalNewDeals || 0,
           notified: summary?.totalMatchedDeals || 0,
         })
+        setRefreshTrigger((prev) => prev + 1)
       } else {
         const errorMsg = typeof data.error === 'string' 
           ? data.error 
@@ -75,7 +77,7 @@ export default function DashboardPage() {
         </div>
       )}
 
-      <DealList />
+      <DealList refreshTrigger={refreshTrigger} />
     </div>
   )
 }

@@ -9,7 +9,11 @@ interface Feed {
   name: string
 }
 
-export default function DealList() {
+interface DealListProps {
+  refreshTrigger?: number
+}
+
+export default function DealList({ refreshTrigger }: DealListProps) {
   const [deals, setDeals] = useState<Deal[]>([])
   const [feeds, setFeeds] = useState<Feed[]>([])
   const [page, setPage] = useState(1)
@@ -74,6 +78,13 @@ export default function DealList() {
     setPage(1)
     fetchDeals(1)
   }, [])
+
+  useEffect(() => {
+    if (refreshTrigger && refreshTrigger > 0) {
+      fetchFeeds()
+      fetchDeals(1)
+    }
+  }, [refreshTrigger])
 
   const handleTabChange = (feedName: string) => {
     setActiveTab(feedName)
